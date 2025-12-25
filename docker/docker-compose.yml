@@ -1,0 +1,41 @@
+version: '3.8'
+services:
+  frontend:
+    build:
+      context: ../front
+    ports:
+      - "3000:3000"
+    networks:
+      - enfoque-net
+
+  backend:
+    build:
+      context: ../backend
+    ports:
+      - "3001:3001"
+    networks:
+      - enfoque-net
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: enfoqueqr
+      MYSQL_USER: enfoque
+      MYSQL_PASSWORD: enfoquepass
+    ports:
+      - "3310:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - enfoque-net
+
+volumes:
+  db_data:
+
+networks:
+  enfoque-net:
+    driver: bridge

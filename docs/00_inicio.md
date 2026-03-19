@@ -50,51 +50,54 @@ Comunicación: REST API
 - user_profiles
 - institutions
 - user_institution
-- equipments
-- equipment_qr_codes
+- devices
+- device_has_qr_code
+- qr_codes
 - qr_scan_logs
-- equipment_documents
-- equipment_document_versions
-- equipment_maintenances
+- documents
+- document_versions
+- maintenances
 
 # Entidad Equipments
-Representa cualquier equipo físico o lógico del sistema.
-Es la entidad central del dominio.
+# Entity: Devices
+Represents any physical or logical device in the system.
+It is the central entity of the domain.
 # Códigos QR
-Los códigos QR existen independientemente del equipo.
-Se enrolan mediante la asignación de equipment_id.
-Se almacena la imgen en png/svg y se registra el path.
+# QR Codes
+QR codes exist independently of the device.
+They are enrolled by assigning device_id.
+The QR image is stored in png/svg format and the path is registered.
 # Enrolamiento de QR
-Un QR disponible cumple:
-- equipment_id IS NULL
+A QR code is available if:
+- device_id IS NULL
 - enabled = 1
-El enrolamiento es un UPDATE controlado.
+Enrollment is a controlled UPDATE.
 # Trazabilidad de Escaneos
-Cada escaneo público registra:
-- Fecha y hora
+Each public scan records:
+- Date and time
 - IP
 - User-Agent
-- Código QR escaneado
+- Scanned QR code
 # Documentación Versionada
-Los documentos pertenecen al equipo.
-Cada documento puede tener múltiples versiones con control de integridad.
+Documents belong to the device.
+Each document can have multiple versions with integrity control.
 # Mantenciones
-Registro histórico de servicio técnico y mantenciones realizadas al equipo.
+Historical record of technical service and maintenances performed on the device.
 # Seguridad
-- Tokens no secuenciales
-- Rate limiting
-- DTO público restringido
-- Logs de acceso
+-- Non-sequential tokens
+-- Rate limiting
+-- Restricted public DTO
+-- Access logs
 # Acceso Público
 GET /qr/:token
-Sin autenticación.
-Solo lectura.
+No authentication required.
+Read-only.
 # Notificaciones
-Eventos posibles:
-- Escaneo QR
-- Documento actualizado
-- Mantención registrada
-Procesamiento asíncrono recomendado.
+Possible events:
+- QR scanned
+- Document updated
+- Maintenance registered
+Asynchronous processing recommended.
 
 # Estructura Frontend (Next.js)
 
@@ -103,71 +106,71 @@ Procesamiento asíncrono recomendado.
 /services
 /admin
   /qrs
-  /equipos
+  /devices
 /qr/[token]
 
-Vista pública
-Panel administrativo
-Cliente API desacoplado
+Public view
+Admin panel
+Decoupled API client
 
 # Estructura Backend (NestJS)
 
 #/src/modules
   /auth
   /users
-  /instituciones
-  /equipos
+  /institutions
+  /devices
   /qr
-  /documentos
-  /mantenciones
-  /notificaciones
+  /documents
+  /maintenances
+  /notifications
 
-Arquitectura modular
-Separación de responsabilidades
-Preparado para microservicios
+Modular architecture
+Separation of responsibilities
+Ready for microservices
 
 # Flujo de control y enrolamiento (UI)
 
 Admin
  ↓
-Lista "QR disponibles"
+List "Available QRs"
  ↓
-Selecciona QR
+Select QR
  ↓
-Selecciona equipo
+Select device
  ↓
-Confirmar enrolamiento
+Confirm enrollment
 
 # Seguridad
 
-Tokens no secuenciales
-Acceso público solo lectura
-Escaneos auditables
-Roles administrativos
-El token nunca debe revelar IDs
-Usar tokens ≥ 32 caracteres
-Índice único obligatorio
+Non-sequential tokens
+Public access is read-only
+Auditable scans
+Administrative roles
+Token must never reveal IDs
+Use tokens ≥ 32 characters
+Unique index required
 
 # Escalabilidad
 
-Guardar path relativo, no absoluto:
-Backend stateless
-QRs regenerables
-Storage desacoplado
+Save relative path, not absolute:
+Stateless backend
+Regenerable QRs
+Decoupled storage
 
 # Roles de Usuario
 
-Administrador
-Operador
-Usuario público
+Administrator
+Operator
+Public user
 
 # Flujo generación masiva de QRS
 
-Generación masiva de QRs (100, 1.000, n)
-Creación de imagen QR
-Persistencia del path
-Enrolamiento posterior a equipo
-Cambio de estado del QR
+Bulk QR generation (100, 1,000, n)
+QR image creation
+Path persistence
+Post-enrollment to device
+QR status change
 
 # Deploy
 Frontend: Vercel
@@ -189,3 +192,11 @@ v2:
 - Auditoría
 - Integraciones
 
+## Instalación de dependencias backend
+
+Ejecuta estos comandos en la carpeta `backend` para instalar las dependencias necesarias:
+
+```bash
+npm install @nestjs/common @nestjs/typeorm typeorm
+npm install --save-dev @types/node
+```

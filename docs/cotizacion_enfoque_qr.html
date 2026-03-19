@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cotización - Enfoque QR | Líneas de Código</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+    :root {
+      --primary: #1a56db;
+      --primary-dark: #1e3a8a;
+      --primary-light: #dbeafe;
+      --accent: #2563eb;
+      --text: #1f2937;
+      --text-light: #6b7280;
+      --text-muted: #9ca3af;
+      --border: #e5e7eb;
+      --bg-light: #f9fafb;
+      --bg-section: #f3f4f6;
+      --success: #059669;
+      --white: #ffffff;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      color: var(--text);
+      line-height: 1.6;
+      background: var(--white);
+      font-size: 14px;
+    }
+
+    @page {
+      size: A4;
+      margin: 15mm 20mm;
+    }
+
+    @media print {
+      body { font-size: 12px; }
+      .page-break { page-break-before: always; }
+      .no-print { display: none; }
+      .container { max-width: 100%; padding: 0; }
+      section { break-inside: avoid; }
+    }
+
+    .container {
+      max-width: 850px;
+      margin: 0 auto;
+      padding: 40px 30px;
+    }
+
+    /* === HEADER === */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding-bottom: 30px;
+      border-bottom: 3px solid var(--primary);
+      margin-bottom: 30px;
+    }
+
+    .header-logo img {
+      height: 60px;
+      object-fit: contain;
+    }
+
+    .header-info {
+      text-align: right;
+      font-size: 13px;
+      color: var(--text-light);
+    }
+
+    .header-info .doc-type {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--primary);
+      letter-spacing: -0.5px;
+      margin-bottom: 4px;
+    }
+
+    .header-info .doc-number {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    /* === METADATA GRID === */
+    .meta-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 30px;
+    }
+
+    .meta-box {
+      background: var(--bg-light);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 18px 20px;
+    }
+
+    .meta-box h3 {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--primary);
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .meta-box p {
+      font-size: 13px;
+      margin-bottom: 3px;
+      color: var(--text);
+    }
+
+    .meta-box .label {
+      color: var(--text-light);
+      font-weight: 500;
+    }
+
+    /* === SECTIONS === */
+    section {
+      margin-bottom: 28px;
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--primary-dark);
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--primary-light);
+      margin-bottom: 16px;
+    }
+
+    .section-subtitle {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+      margin: 16px 0 10px;
+    }
+
+    .intro-text {
+      font-size: 14px;
+      color: var(--text);
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+
+    /* === FEATURE LIST === */
+    .feature-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px 20px;
+      margin-bottom: 20px;
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 13px;
+      padding: 6px 0;
+    }
+
+    .feature-icon {
+      color: var(--success);
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* === PRICING TABLE === */
+    .pricing-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+      font-size: 13px;
+    }
+
+    .pricing-table thead th {
+      background: var(--primary);
+      color: var(--white);
+      padding: 12px 16px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .pricing-table thead th:first-child {
+      border-radius: 6px 0 0 0;
+    }
+
+    .pricing-table thead th:last-child {
+      border-radius: 0 6px 0 0;
+      text-align: right;
+    }
+
+    .pricing-table tbody td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+
+    .pricing-table tbody tr:nth-child(even) {
+      background: var(--bg-light);
+    }
+
+    .pricing-table tbody td:last-child {
+      text-align: right;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .pricing-table .item-name {
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .pricing-table .item-desc {
+      font-size: 12px;
+      color: var(--text-light);
+      margin-top: 2px;
+    }
+
+    .pricing-table tfoot td {
+      padding: 14px 16px;
+      font-weight: 700;
+      font-size: 15px;
+      border-top: 2px solid var(--primary);
+    }
+
+    .pricing-table tfoot td:last-child {
+      text-align: right;
+      color: var(--primary);
+      font-size: 18px;
+    }
+
+    /* === PLAN CARDS === */
+    .plans-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .plan-card {
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+      position: relative;
+      transition: border-color 0.2s;
+    }
+
+    .plan-card.recommended {
+      border-color: var(--primary);
+      box-shadow: 0 4px 12px rgba(26, 86, 219, 0.15);
+    }
+
+    .plan-card.recommended::before {
+      content: "RECOMENDADO";
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--primary);
+      color: white;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 14px;
+      border-radius: 20px;
+      letter-spacing: 0.5px;
+    }
+
+    .plan-name {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .plan-price {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--primary);
+      margin: 10px 0;
+    }
+
+    .plan-price span {
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--text-light);
+    }
+
+    .plan-features {
+      list-style: none;
+      font-size: 12px;
+      color: var(--text-light);
+      text-align: left;
+      margin-top: 14px;
+    }
+
+    .plan-features li {
+      padding: 4px 0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .plan-features li::before {
+      content: "✓";
+      color: var(--success);
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    /* === TERMS === */
+    .terms-list {
+      counter-reset: term;
+      list-style: none;
+      padding: 0;
+    }
+
+    .terms-list > li {
+      counter-increment: term;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .terms-list > li:last-child {
+      border-bottom: none;
+    }
+
+    .terms-list > li strong {
+      display: block;
+      font-size: 14px;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .terms-list > li strong::before {
+      content: counter(term) ". ";
+      color: var(--primary);
+      font-weight: 800;
+    }
+
+    /* === FOOTER === */
+    .doc-footer {
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 2px solid var(--primary-light);
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .doc-footer .brand {
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    /* === SIGNATURES === */
+    .signatures {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      margin-top: 40px;
+      padding-top: 20px;
+    }
+
+    .signature-box {
+      text-align: center;
+    }
+
+    .signature-line {
+      border-top: 1px solid var(--text);
+      margin-top: 60px;
+      padding-top: 8px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .signature-role {
+      font-size: 12px;
+      color: var(--text-light);
+    }
+
+    /* === TECH STACK === */
+    .tech-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 10px 0 16px;
+    }
+
+    .tech-badge {
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 20px;
+    }
+
+    /* === HIGHLIGHT BOX === */
+    .highlight-box {
+      background: linear-gradient(135deg, var(--primary-light), #eff6ff);
+      border-left: 4px solid var(--primary);
+      border-radius: 0 8px 8px 0;
+      padding: 16px 20px;
+      margin: 16px 0;
+      font-size: 13px;
+    }
+
+    .highlight-box strong {
+      color: var(--primary-dark);
+    }
+
+    /* === TIMELINE === */
+    .timeline {
+      margin: 16px 0;
+    }
+
+    .timeline-item {
+      display: flex;
+      gap: 16px;
+      padding: 10px 0;
+      font-size: 13px;
+    }
+
+    .timeline-phase {
+      background: var(--primary);
+      color: white;
+      font-weight: 700;
+      font-size: 11px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      white-space: nowrap;
+      height: fit-content;
+      min-width: 80px;
+      text-align: center;
+    }
+
+    .timeline-content strong {
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .timeline-content {
+      color: var(--text-light);
+    }
+
+    /* Print button */
+    .print-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      z-index: 1000;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .print-btn:hover {
+      background: var(--primary-dark);
+    }
+  </style>
+</head>
+<body>
+
+  <button class="print-btn no-print" onclick="window.print()">📄 Guardar como PDF</button>
+
+  <div class="container">
+
+    <!-- ============ HEADER ============ -->
+    <div class="header">
+      <div class="header-logo">
+        <img src="../front/public/logo_lineas.png" alt="Líneas de Código">
+      </div>
+      <div class="header-info">
+        <div class="doc-type">COTIZACIÓN</div>
+        <div class="doc-number">COT-2026-0001</div>
+        <p>Fecha: 11 de marzo de 2026</p>
+        <p>Vigencia: 30 días</p>
+      </div>
+    </div>
+
+    <!-- ============ META INFO ============ -->
+    <div class="meta-grid">
+      <div class="meta-box">
+        <h3>Proveedor</h3>
+        <p><strong>Líneas de Código SpA</strong></p>
+        <p>Desarrollo de Software & Soluciones Tecnológicas</p>
+        <p><span class="label">Contacto:</span> contacto@lineasdecodigo.cl</p>
+        <p><span class="label">Teléfono:</span> +56 9 895 2335 59</p>
+        <p><span class="label">Sitio web:</span> www.lineasdecodigo.cl</p>
+      </div>
+      <div class="meta-box">
+        <h3>Cliente</h3>
+        <p><strong>[Nombre de la Empresa / Institución]</strong></p>
+        <p><span class="label">RUT:</span> XX.XXX.XXX-X</p>
+        <p><span class="label">Contacto:</span> [Nombre del contacto]</p>
+        <p><span class="label">Email:</span> [email@cliente.cl]</p>
+        <p><span class="label">Dirección:</span> [Dirección del cliente]</p>
+      </div>
+    </div>
+
+    <!-- ============ INTRO ============ -->
+    <section>
+      <h2 class="section-title">Presentación de la Propuesta</h2>
+      <p class="intro-text">
+        <strong>Enfoque QR</strong> es una plataforma web integral para la <strong>gestión, trazabilidad y control de equipos</strong>
+        mediante códigos QR. Permite a organizaciones de cualquier tamaño mantener un inventario trazable de sus equipos,
+        gestionar mantenciones, documentación técnica y acceder a fichas públicas mediante el escaneo de etiquetas QR físicas.
+      </p>
+      <p class="intro-text">
+        La solución ha sido diseñada con enfoque en <strong>seguridad, escalabilidad y experiencia de usuario</strong>,
+        utilizando tecnologías modernas con arquitectura cloud-ready, permitiendo una implementación rápida y un crecimiento adaptable a las necesidades del negocio.
+      </p>
+
+      <p class="intro-text">
+        <strong>Agrega valor a tu empresa.</strong> Ofrece bitácoras de mantención accesibles para todos tus clientes y equipos de trabajo.
+        Elimina los correos solicitando documentación de equipos — toda la información técnica, historial de servicio y documentos
+        quedan disponibles con un simple escaneo QR. <strong>Diferénciate de la competencia</strong> entregando trazabilidad, transparencia
+        y profesionalismo en cada equipo que gestionas.
+      </p>
+
+      <div class="highlight-box">
+        <strong>Propuesta de valor:</strong> Enfoque QR transforma la gestión de activos físicos en un proceso digital,
+        trazable y eficiente. Un simple escaneo QR da acceso inmediato a toda la información del equipo:
+        ficha técnica, historial de mantenciones, documentación y estado actual.
+      </div>
+    </section>
+
+    <!-- ============ STACK ============ -->
+    <section>
+      <h2 class="section-title">Stack Tecnológico</h2>
+      <div class="tech-badges">
+        <span class="tech-badge">Next.js (React)</span>
+        <span class="tech-badge">NestJS</span>
+        <span class="tech-badge">TypeORM</span>
+        <span class="tech-badge">MySQL 8</span>
+        <span class="tech-badge">AWS (EC2 / RDS / S3)</span>
+        <span class="tech-badge">Docker</span>
+        <span class="tech-badge">JWT / httpOnly Cookies</span>
+        <span class="tech-badge">Swagger API Docs</span>
+        <span class="tech-badge">TailwindCSS</span>
+      </div>
+      <p class="intro-text" style="margin-top: 8px;">
+        Arquitectura RESTful con separación completa frontend/backend, desplegable en infraestructura cloud (AWS) o local mediante Docker. Base de datos relacional con soporte para soft-delete, auditoría y escalabilidad horizontal.
+      </p>
+    </section>
+
+    <!-- ============ FEATURES ============ -->
+    <section>
+      <h2 class="section-title">Módulos y Funcionalidades Incluidas</h2>
+
+      <h3 class="section-subtitle">Gestión de Equipos</h3>
+      <div class="feature-grid">
+        <div class="feature-item"><span class="feature-icon">✓</span> Registro y edición de equipos con fotos</div>
+        <div class="feature-item"><span class="feature-icon">✓</span> Ficha pública accesible vía QR</div>
+        <div class="feature-item"><span class="feature-icon">✓</span> Detalle técnico: N/S, marca, modelo, estado</div>
+        <div class="feature-item"><span class="feature-icon">✓</span> Vista pública y vista administrador diferenciadas</div>
+      </div>
+
+      <h3 class="section-subtitle">Códigos QR y Etiquetas</h3>
+      <div class="feature-grid">
+        <div class="feature-item"><span class="feature-icon">✓</span> Generación automática de QR por equipo</div>
+        <div class="feature-item"><span class="feature-icon">✓</span> Generación de lotes de QR pre-asignables</div>
+        <div class="feature-item"><span class="feature-icon">✓</span> Enrolamiento de QR a equipos nuevos</div>
+        <div class="feature-item"><span class="feature-icon">✓</span> Etiquetas imprimibles con logo institucional</div>
+        <div class="feature-item"><span class="feature-icon">✓</span> QR universal por institución (búsqueda por N/S)</div>
+        <div class="feature-item"><span class="feature-icon">✓</span> Exportación de lotes en CSV / PDF</div>
+      </div>
+
+      <h3 class="section-subtitle">Mantenciones</h3>
+      <div class="feature-grid">
+        <div class="feature-item"><span class="feature-icon">✓</span> Registro completo de mantenciones</div>
+        <div class="feature-item"><span class="feature-icon">✓</span> Adjuntar fotos y documentos por mantención</div>
+        <div class="feature-item"><span class="feature-icon">✓</span> Flujo de estados: borrador → completada</div>
+        <div class="feature-item"><span class="feature-icon">✓</span> Log de auditoría por mantención</div>
+        <div class="feature-item"><span class="feature-icon">✓</span> Historial cronológico visible en ficha pública</div>
+        <div class="feature-item"><span class="feature-icon">✓</span> Última mantención destacada en ficha</div>
+      </div>
+
+      <h3 class="section-subtitle">Documentación Técnica</h3>
+      <div class="feature-grid">
+        <div class="feature-item"><span class="feature-icon">✓</span> Subida de documentos por equipo</div>
+        <div class="feature-item"><span class="feature-icon">✓</span> Control de visibilidad: públicos y privados</div>
+        <div class="feature-item"><span class="feature-icon">✓</span> Descarga directa desde ficha del equipo</div>
+        <div class="feature-item"><span class="feature-icon">✓</span> Almacenamiento en AWS S3 con URLs pre-firmadas</div>
+      </div>
+
+      <h3 class="section-subtitle">Trazabilidad y Analítica</h3>
+      <div class="feature-grid">
+        <div class="feature-item"><span class="feature-icon">✓</span> Registro de cada escaneo QR (IP, fecha, user-agent)</div>
+        <div class="feature-item"><span class="feature-icon">✓</span> Contador de escaneos por equipo</div>
+        <div class="feature-item"><span class="feature-icon">✓</span> Panel de logs paginados en admin</div>
+        <div class="feature-item"><span class="feature-icon">✓</span> Diferenciación: escaneo directo vs. universal</div>
+      </div>
+
+      <h3 class="section-subtitle">Administración y Seguridad</h3>
+      <div class="feature-grid">
+        <div class="feature-item"><span class="feature-icon">✓</span> Autenticación JWT con cookies httpOnly</div>
+        <div class="feature-item"><span class="feature-icon">✓</span> Gestión de usuarios con roles (Admin, Editor, User)</div>
+        <div class="feature-item"><span class="feature-icon">✓</span> Aislamiento por institución (multi-tenant)</div>
+        <div class="feature-item"><span class="feature-icon">✓</span> Rate limiting en endpoints públicos</div>
+        <div class="feature-item"><span class="feature-icon">✓</span> Personalización visual por institución</div>
+        <div class="feature-item"><span class="feature-icon">✓</span> Documentación API interactiva (Swagger)</div>
+      </div>
+    </section>
+
+    <!-- ============ PAGE BREAK ============ -->
+    <div class="page-break"></div>
+
+    <!-- ============ PRICING ============ -->
+    <section>
+      <h2 class="section-title">Detalle de Inversión — Desarrollo e Implementación</h2>
+
+      <table class="pricing-table">
+        <thead>
+          <tr>
+            <th>Ítem</th>
+            <th>Valor (CLP + IVA)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <div class="item-name">Plataforma Enfoque QR — Licencia de implementación</div>
+              <div class="item-desc">Incluye todos los módulos descritos: gestión de equipos, códigos QR, mantenciones, documentación, trazabilidad, administración de usuarios y panel administrativo completo.</div>
+            </td>
+            <td>$3.500.000</td>
+          </tr>
+          <tr>
+            <td>
+              <div class="item-name">Personalización y configuración institucional</div>
+              <div class="item-desc">Configuración de colores, logo, dominio personalizado, etiquetas QR con branding del cliente.</div>
+            </td>
+            <td>$450.000</td>
+          </tr>
+          <tr>
+            <td>
+              <div class="item-name">Despliegue en infraestructura cloud (AWS)</div>
+              <div class="item-desc">Configuración de EC2, RDS (MySQL), S3, dominio SSL, CI/CD. Incluye documentación de infraestructura.</div>
+            </td>
+            <td>$600.000</td>
+          </tr>
+          <tr>
+            <td>
+              <div class="item-name">Capacitación y acompañamiento inicial</div>
+              <div class="item-desc">2 sesiones de capacitación (administradores y usuarios), documentación de uso, soporte inicial por 30 días.</div>
+            </td>
+            <td>$350.000</td>
+          </tr>
+          <tr>
+            <td>
+              <div class="item-name">Generación de primer lote QR (archivos digitales)</div>
+              <div class="item-desc">Generación del primer lote de hasta 500 códigos QR, archivo de etiquetas listo para impresión. La impresión física y el pegado en los equipos es responsabilidad del Cliente.</div>
+            </td>
+            <td>$150.000</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td><strong>TOTAL IMPLEMENTACIÓN</strong></td>
+            <td>$5.050.000</td>
+          </tr>
+        </tfoot>
+      </table>
+    </section>
+
+    <!-- ============ PLANS ============ -->
+    <section>
+      <h2 class="section-title">Planes de Servicio Mensual (Post-Implementación)</h2>
+      <p class="intro-text" style="margin-bottom: 16px;">
+        Una vez implementada la plataforma, se ofrece un plan de servicio mensual que incluye hosting, soporte, actualizaciones y almacenamiento.
+      </p>
+
+      <div class="plans-container">
+        <div class="plan-card">
+          <div class="plan-name">Starter</div>
+          <div class="plan-price">$89.000 <span>/mes</span></div>
+          <ul class="plan-features">
+            <li>Hasta 200 equipos</li>
+            <li>3 usuarios administradores</li>
+            <li>5 GB almacenamiento S3</li>
+            <li>Soporte por email (48h)</li>
+            <li>Actualizaciones de seguridad</li>
+            <li>Reportes básicos</li>
+          </ul>
+        </div>
+
+        <div class="plan-card recommended">
+          <div class="plan-name">Profesional</div>
+          <div class="plan-price">$179.000 <span>/mes</span></div>
+          <ul class="plan-features">
+            <li>Hasta 1.000 equipos</li>
+            <li>10 usuarios administradores</li>
+            <li>25 GB almacenamiento S3</li>
+            <li>Soporte prioritario (24h)</li>
+            <li>Actualizaciones completas</li>
+            <li>QR universal + analítica</li>
+            <li>Personalización de etiquetas</li>
+            <li>Backups diarios automatizados</li>
+          </ul>
+        </div>
+
+        <div class="plan-card">
+          <div class="plan-name">Enterprise</div>
+          <div class="plan-price">A convenir</div>
+          <ul class="plan-features">
+            <li>Equipos ilimitados</li>
+            <li>Usuarios ilimitados</li>
+            <li>Almacenamiento a medida</li>
+            <li>Soporte dedicado (SLA)</li>
+            <li>Desarrollo de features custom</li>
+            <li>Integraciones a medida</li>
+            <li>Infraestructura dedicada</li>
+            <li>Consultoría técnica incluida</li>
+          </ul>
+        </div>
+      </div>
+
+      <p style="font-size: 12px; color: var(--text-muted); text-align: center;">
+        * Todos los valores están expresados en pesos chilenos (CLP) + IVA. Planes sujetos a contrato anual con pago mensual.
+      </p>
+    </section>
+
+    <!-- ============ TIMELINE ============ -->
+    <section>
+      <h2 class="section-title">Cronograma de Implementación Estimado</h2>
+      <div class="timeline">
+        <div class="timeline-item">
+          <span class="timeline-phase">Semana 1-2</span>
+          <div class="timeline-content">
+            <strong>Levantamiento y configuración inicial</strong>
+            Reunión de kick-off, configuración de infraestructura cloud, setup de ambientes de desarrollo y staging.
+          </div>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-phase">Semana 3-4</span>
+          <div class="timeline-content">
+            <strong>Personalización y migración de datos</strong>
+            Adaptación visual (colores, logo, etiquetas), importación de datos existentes (si aplica), configuración de usuarios y roles.
+          </div>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-phase">Semana 5-6</span>
+          <div class="timeline-content">
+            <strong>Testing, capacitación y go-live</strong>
+            Pruebas de aceptación con el cliente, sesiones de capacitación, generación del primer lote QR, puesta en producción.
+          </div>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-phase">Semana 7-8</span>
+          <div class="timeline-content">
+            <strong>Acompañamiento post-lanzamiento</strong>
+            Soporte intensivo, resolución de incidencias, ajustes finos según feedback del equipo operativo.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ QR PRINT RECOMMENDATIONS ============ -->
+    <section>
+      <h2 class="section-title">Recomendaciones de Impresión de Etiquetas QR</h2>
+      <p class="intro-text" style="margin-bottom: 12px;">
+        La impresión y el pegado de las etiquetas QR en los equipos es responsabilidad del Cliente. A continuación, recomendaciones para garantizar durabilidad y legibilidad óptima:
+      </p>
+
+      <h3 class="section-subtitle">Tipo de Papel / Material</h3>
+      <div class="feature-grid">
+        <div class="feature-item"><span class="feature-icon">✓</span> <strong>Vinilo adhesivo blanco:</strong> resistente al agua, ideal para ambientes húmedos o refrigerados</div>
+        <div class="feature-item"><span class="feature-icon">✓</span> <strong>Poliéster laminado (Mylar):</strong> alta resistencia a químicos, abrasión y temperaturas extremas</div>
+        <div class="feature-item"><span class="feature-icon">✓</span> <strong>Papel adhesivo plastificado:</strong> opción económica para ambientes interiores secos</div>
+        <div class="feature-item"><span class="feature-icon">✓</span> <strong>Etiquetas metálicas con QR grabado:</strong> máxima durabilidad para equipos industriales</div>
+      </div>
+
+      <h3 class="section-subtitle">Método de Impresión</h3>
+      <div class="feature-grid">
+        <div class="feature-item"><span class="feature-icon">✓</span> <strong>Impresora láser:</strong> tóner resistente al agua, ideal para vinilo y poliéster</div>
+        <div class="feature-item"><span class="feature-icon">✓</span> <strong>Impresora de etiquetas térmica:</strong> para grandes volúmenes (Brother, Zebra, DYMO)</div>
+        <div class="feature-item"><span class="feature-icon">✓</span> <strong>Imprenta profesional:</strong> para lotes masivos con acabado premium y laminado UV</div>
+        <div class="feature-item"><span class="feature-icon">✓</span> <strong>Evitar inkjet sin laminado:</strong> la tinta se degrada con humedad y manipulación</div>
+      </div>
+
+      <h3 class="section-subtitle">Recomendaciones Generales</h3>
+      <div class="feature-grid">
+        <div class="feature-item"><span class="feature-icon">✓</span> Tamaño mínimo recomendado: <strong>4 x 9 cm</strong> (etiqueta horizontal)</div>
+        <div class="feature-item"><span class="feature-icon">✓</span> Resolución mínima de impresión: <strong>300 DPI</strong></div>
+        <div class="feature-item"><span class="feature-icon">✓</span> Dejar margen de <strong>3 mm</strong> alrededor del QR para lectura confiable</div>
+        <div class="feature-item"><span class="feature-icon">✓</span> Verificar legibilidad escaneando con celular <strong>antes del pegado masivo</strong></div>
+        <div class="feature-item"><span class="feature-icon">✓</span> Superficie limpia y seca antes de pegar la etiqueta</div>
+        <div class="feature-item"><span class="feature-icon">✓</span> Aplicar laminado transparente si el equipo está expuesto a limpieza frecuente</div>
+      </div>
+
+      <div class="highlight-box">
+        <strong>Nota:</strong> Enfoque QR entrega los archivos de etiquetas en formato <strong>PNG de alta resolución</strong>, listos para imprimir en cualquier método. También se pueden exportar en formato PDF para imprentas profesionales. Ante dudas, nuestro equipo puede orientar al Cliente en la selección del proveedor de impresión más adecuado.
+      </div>
+    </section>
+
+    <!-- ============ PAGE BREAK ============ -->
+    <div class="page-break"></div>
+
+    <!-- ============ TERMS OF SERVICE ============ -->
+    <section>
+      <h2 class="section-title">Términos y Condiciones del Servicio</h2>
+
+      <ol class="terms-list">
+        <li>
+          <strong>Objeto del Contrato</strong>
+          El presente documento establece los términos bajo los cuales <strong>Líneas de Código SpA</strong> (en adelante "el Proveedor") proveerá al Cliente los servicios de desarrollo, implementación, alojamiento y soporte de la plataforma <strong>Enfoque QR</strong>, según las condiciones aquí descritas.
+        </li>
+
+        <li>
+          <strong>Alcance del Servicio</strong>
+          El servicio comprende: (a) implementación de la plataforma con los módulos detallados en esta cotización; (b) configuración y personalización institucional; (c) despliegue en infraestructura cloud; (d) capacitación inicial; (e) soporte técnico y mantenimiento según el plan contratado. Cualquier funcionalidad adicional no contemplada en este documento será cotizada por separado.
+        </li>
+
+        <li>
+          <strong>Condiciones de Pago</strong>
+          La implementación se estructura en los siguientes pagos: <strong>50% al inicio del proyecto</strong> (contra firma de contrato) y <strong>50% contra entrega y aprobación</strong> del despliegue en producción. El plan de servicio mensual se factura de forma anticipada, con vencimiento el día 5 de cada mes. Mora superior a 15 días habilita la suspensión temporal del servicio.
+        </li>
+
+        <li>
+          <strong>Plazo de Implementación</strong>
+          El plazo estimado de implementación es de <strong>6 a 8 semanas</strong> desde la fecha de inicio del proyecto, sujeto a la disponibilidad del Cliente para la entrega de información, validaciones y aprobaciones requeridas. Retrasos atribuibles al Cliente podrán extender el plazo sin responsabilidad del Proveedor.
+        </li>
+
+        <li>
+          <strong>Propiedad Intelectual y Licencia</strong>
+          El código fuente de la plataforma Enfoque QR es propiedad de <strong>Líneas de Código SpA</strong>. El Cliente adquiere una <strong>licencia de uso no exclusiva, no transferible</strong> y limitada a su organización e instituciones registradas en la plataforma. El Cliente es propietario exclusivo de sus datos (equipos, documentos, mantenciones, usuarios).
+        </li>
+
+        <li>
+          <strong>Protección de Datos y Privacidad</strong>
+          El Proveedor se compromete a resguardar la confidencialidad e integridad de los datos del Cliente, implementando medidas de seguridad acordes al estado del arte: cifrado en tránsito (TLS/SSL), contraseñas hasheadas (bcrypt), tokens no secuenciales, cookies httpOnly, rate limiting y aislamiento multitenant. El Proveedor no compartirá datos del Cliente con terceros salvo requerimiento legal.
+        </li>
+
+        <li>
+          <strong>Niveles de Servicio (SLA)</strong>
+          El Proveedor garantiza una disponibilidad mensual del <strong>99.5%</strong> para los planes Profesional y Enterprise, excluyendo ventanas de mantenimiento programado (notificadas con 48 horas de anticipación). Los tiempos de respuesta ante incidencias críticas son: Plan Starter: 48 horas hábiles; Plan Profesional: 24 horas hábiles; Plan Enterprise: según SLA específico.
+        </li>
+
+        <li>
+          <strong>Respaldo y Recuperación de Datos</strong>
+          Se realizan <strong>backups automatizados diarios</strong> de la base de datos y almacenamiento S3, con retención mínima de 30 días. En caso de pérdida de datos por causa imputable al Proveedor, este se compromete a restaurar la última copia disponible sin costo adicional.
+        </li>
+
+        <li>
+          <strong>Soporte Técnico</strong>
+          El soporte técnico se proporciona según el plan contratado, a través de correo electrónico y/o plataforma de tickets. Incluye: resolución de errores de la plataforma, asistencia en configuración y consultas de uso. No incluye: desarrollo de funcionalidades nuevas, capacitaciones adicionales, ni soporte sobre infraestructura externa del Cliente.
+        </li>
+
+        <li>
+          <strong>Actualizaciones y Mejoras</strong>
+          El Proveedor realizará actualizaciones periódicas de seguridad y corrección de errores sin costo adicional. Las mejoras funcionales y nuevas funcionalidades serán incluidas según el plan contratado o cotizadas por separado para el plan Starter.
+        </li>
+
+        <li>
+          <strong>Duración y Renovación</strong>
+          El contrato de servicio mensual tiene una duración mínima de <strong>12 meses</strong>. Se renueva automáticamente por períodos iguales salvo notificación escrita de cualquiera de las partes con <strong>30 días de anticipación</strong> al vencimiento del período vigente.
+        </li>
+
+        <li>
+          <strong>Terminación del Servicio</strong>
+          En caso de terminación del contrato: (a) el Cliente recibirá una exportación completa de sus datos en formato estándar (CSV/SQL) dentro de los 15 días siguientes; (b) se mantendrá acceso de solo lectura por 30 días para facilitar la transición; (c) transcurrido dicho plazo, los datos serán eliminados de forma segura de los servidores del Proveedor.
+        </li>
+
+        <li>
+          <strong>Limitación de Responsabilidad</strong>
+          La responsabilidad máxima del Proveedor por cualquier concepto no excederá el monto total pagado por el Cliente en los últimos 12 meses de servicio. El Proveedor no será responsable por daños indirectos, pérdida de beneficios o interrupciones causadas por fuerza mayor, fallos de terceros (AWS, proveedores de internet) o mal uso de la plataforma por parte del Cliente.
+        </li>
+
+        <li>
+          <strong>Confidencialidad</strong>
+          Ambas partes se comprometen a mantener confidencialidad sobre la información técnica, comercial y operativa intercambiada durante la vigencia del contrato y por un período de <strong>2 años</strong> posterior a su término.
+        </li>
+
+        <li>
+          <strong>Jurisdicción y Resolución de Conflictos</strong>
+          El presente acuerdo se rige por las leyes de la República de Chile. Cualquier controversia será sometida al conocimiento de los Tribunales Ordinarios de Justicia de Santiago, Chile, renunciando ambas partes a cualquier otro fuero o jurisdicción.
+        </li>
+      </ol>
+    </section>
+
+    <!-- ============ VALIDITY ============ -->
+    <section>
+      <div class="highlight-box">
+        <strong>Vigencia de esta cotización:</strong> La presente propuesta es válida por <strong>30 días corridos</strong> a partir de la fecha de emisión (11 de marzo de 2026). Los valores están expresados en pesos chilenos (CLP) más IVA y podrán ser ajustados posterior a este período según condiciones de mercado.
+      </div>
+    </section>
+
+    <!-- ============ SIGNATURES ============ -->
+    <div class="signatures">
+      <div class="signature-box">
+        <div class="signature-line">Líneas de Código SpA</div>
+        <div class="signature-role">Representante del Proveedor</div>
+      </div>
+      <div class="signature-box">
+        <div class="signature-line">[Nombre del Cliente]</div>
+        <div class="signature-role">Representante del Cliente</div>
+      </div>
+    </div>
+
+    <!-- ============ FOOTER ============ -->
+    <div class="doc-footer">
+      <p><span class="brand">Líneas de Código SpA</span> — Desarrollo de Software & Soluciones Tecnológicas</p>
+      <p>contacto@lineasdecodigo.cl · www.lineasdecodigo.cl</p>
+      <p style="margin-top: 8px;">Documento generado el 11 de marzo de 2026 · COT-2026-0042</p>
+    </div>
+
+  </div>
+
+</body>
+</html>

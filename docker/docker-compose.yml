@@ -5,6 +5,12 @@ services:
       context: ../front
     ports:
       - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
+    volumes:
+      - ../front:/app
+      - /app/node_modules
     networks:
       - enfoque-net
 
@@ -13,6 +19,11 @@ services:
       context: ../backend
     ports:
       - "3001:3001"
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    volumes:
+      - ../backend:/app
+      - /app/node_modules
     networks:
       - enfoque-net
     depends_on:

@@ -1,0 +1,8 @@
+# Reportes / páginas HTML generadas (no versionar)
+*.html
+
+# Dumps de base de datos (contienen datos reales)
+docs/dump_enfoque.sql
+
+# macOS
+.DS_Store

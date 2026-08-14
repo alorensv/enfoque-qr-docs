@@ -1,13 +1,17 @@
-version: '3.8'
+# Proyecto/grupo propio para no chocar con otros contenedores
+name: enfoque-qr
+
 services:
   frontend:
     build:
       context: ../front
     ports:
-      - "3000:3000"
+      - "3004:3000"
     environment:
       - NODE_ENV=development
       - CHOKIDAR_USEPOLLING=true
+      # El navegador llama al backend por el puerto del host (3009)
+      - NEXT_PUBLIC_API_URL=http://localhost:3009
     volumes:
       - ../front:/app
       - /app/node_modules
@@ -18,9 +22,13 @@ services:
     build:
       context: ../backend
     ports:
-      - "3001:3001"
+      - "3009:3001"
     environment:
       - CHOKIDAR_USEPOLLING=true
+      # El front ahora corre en localhost:3004: permitir su origen en CORS
+      - CORS_ORIGINS=http://localhost:3004
+      # Base pública usada para construir el QR del cliente (en dev = front local)
+      - PUBLIC_WEB_URL=http://localhost:3004
     volumes:
       - ../backend:/app
       - /app/node_modules
